@@ -26,7 +26,7 @@ export type SelectedElementType = ElementType & {
   offsetY?: number;
 };
 
-export type ActionType =
+export type ActionsType =
   | "writing"
   | "drawing"
   | "moving"
