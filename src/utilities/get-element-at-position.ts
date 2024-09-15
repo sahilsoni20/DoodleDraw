@@ -1,5 +1,5 @@
+import { nearPoint } from ".";
 import { ElementType, PointType, Tools } from "../types";
-import { nearPoint } from "./near-point/near-point";
 
 export const getElementAtPosition = (
   x: number,
@@ -28,22 +28,23 @@ const positionWithinElement = (x: number, y: number, element: ElementType) => {
       const topRight = nearPoint(x, y, x2, y1, "topRight");
       const bottomLeft = nearPoint(x, y, x1, y2, "bottomLeft");
       const bottomRight = nearPoint(x, y, x2, y2, "bottomRight");
-      return topLeft || topRight || bottomLeft || bottomRight;
+      const inside = x >= x1 && x <= x2 && y >= y1 && y <= y2 ? "inside" : null;
+      return topLeft || topRight || bottomLeft || bottomRight || inside;
     }
     case Tools.pencil: {
       const betweenAnyPoint = element.points!.some((point, index) => {
-        const nearPoint = element.points![index + 1];
-        if (!nearPoint) return false;
+        const nextPoint = element.points![index + 1];
+        if (!nextPoint) return false;
         return (
-          onLine(point.x, point.y, nearPoint.x, nearPoint.y, x, y, 5) != null
+          onLine(point.x, point.y, nextPoint.x, nextPoint.y, x, y, 5) != null
         );
       });
-      return betweenAnyPoint ? "inside" : "null";
+      return betweenAnyPoint ? "inside" : null;
     }
     case Tools.text:
-      return x >= x1 && x <= x2 && y >= y1 && y <= y2 ? "inside" : "null";
+      return x >= x1 && x <= x2 && y >= y1 && y <= y2 ? "inside" : null;
     default:
-      throw new Error(`Type not recognized ${type}`);
+      throw new Error(`Type not recognised: ${type}`);
   }
 };
 
@@ -56,12 +57,12 @@ const onLine = (
   y: number,
   maxDistance: number = 1
 ): string | null => {
-    const a: PointType = {x: x1, y: y1}
-    const b: PointType = {x: x2, y: y2}
-    const c: PointType = {x, y}
-    const offset = distance(a,b) - (distance(a,c) + distance(b,c))
-    return Math.abs(offset) < maxDistance ? "inside" : "null"
+  const a: PointType = { x: x1, y: y1 };
+  const b: PointType = { x: x2, y: y2 };
+  const c: PointType = { x, y };
+  const offset = distance(a, b) - (distance(a, c) + distance(b, c));
+  return Math.abs(offset) < maxDistance ? "inside" : null;
 };
 
-const distance = (a: PointType, b: PointType) => 
-    Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2))
+const distance = (a: PointType, b: PointType) =>
+  Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));

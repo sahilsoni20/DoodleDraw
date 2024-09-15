@@ -3,21 +3,20 @@ import { ElementType } from "../types";
 
 export const drawElement = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  roughCanva: any,
+  roughCanvas: any,
   context: CanvasRenderingContext2D,
   element: ElementType
 ) => {
   switch (element.type) {
     case "line":
     case "rectangle":
-      roughCanva.draw(element.roughElement);
+      roughCanvas.draw(element.roughElement);
       break;
     case "pencil": {
       if (!element.points) {
-        throw new Error("Pencil points aren't define");
+        throw new Error("Pencil element points are undefined");
       }
       const strokePoints = getStroke(element.points);
-
       const formattedPoints: [number, number][] = strokePoints.map((point) => {
         if (point.length !== 2) {
           throw new Error(
@@ -63,6 +62,7 @@ const getSvgPathFromStroke = (stroke: [number, number][]) => {
     },
     ["M", ...stroke[0].map((num) => num.toString()), "Q"]
   );
+
   d.push("Z");
-  return d.join("");
+  return d.join(" ");
 };
