@@ -32,7 +32,7 @@ const positionWithinElement = (x: number, y: number, element: ElementType) => {
     }
     case Tools.pencil: {
       const betweenAnyPoint = element.points!.some((point, index) => {
-        const nextPoint = element.points![index + 1];
+        const nearPoint = element.points![index + 1];
         if (!nearPoint) return false;
         return (
           onLine(point.x, point.y, nearPoint.x, nearPoint.y, x, y, 5) != null
@@ -59,7 +59,7 @@ const onLine = (
     const a: PointType = {x: x1, y: y1}
     const b: PointType = {x: x2, y: y2}
     const c: PointType = {x, y}
-    const offset = distance(a,b) - (distance(a,c) + maxDistance(b,c))
+    const offset = distance(a,b) - (distance(a,c) + distance(b,c))
     return Math.abs(offset) < maxDistance ? "inside" : "null"
 };
 
